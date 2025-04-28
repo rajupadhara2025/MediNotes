@@ -1,0 +1,43 @@
+﻿@model List<MediNotes.Web.Models.ChatMessage>
+
+@{
+    ViewBag.Title = "MediNotes - Healthcare Chat Agent";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">🩺 MediNotes - Healthcare Chat</h2>
+
+    <div class="card">
+        <div class="card-body chat-box" id="chatBox" style="height: 400px; overflow-y: scroll;">
+            @await Html.PartialAsync("_ChatPartial", Model)
+        </div>
+
+        <div class="card-footer">
+            <form id="chatForm" method="post" asp-action="SendMessage" asp-controller="MediScan">
+                <div class="input-group">
+                    <input type="text" name="userMessage" id="userMessage" class="form-control" placeholder="Enter patient notes..." autocomplete="off" required />
+                    <button id="sendButton" class="btn btn-primary" type="submit">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {   
+    <script>
+        $(function () {
+            $("#chatForm").submit(function (e) {
+                e.preventDefault();
+                $("#sendButton").prop("disabled", true);    
+
+                $.post('@Url.Action("SendMessage", "MediNotes")', $(this).serialize(), function (partialViewResult) {
+                    $("#chatBox").html(partialViewResult);
+                    $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight);
+                    $("#userMessage").val("").focus();
+                    $("#sendButton").prop("disabled", false);
+                });
+            });
+        });
+    </script>
+}
+

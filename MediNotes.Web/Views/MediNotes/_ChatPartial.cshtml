@@ -1,0 +1,19 @@
+﻿@model List<MediNotes.Web.Models.ChatMessage>
+
+@foreach (var chat in Model)
+{
+
+    var formattedMessage = System.Text.RegularExpressions.Regex.Replace(
+        chat.Message.Replace("\n", "<br/>"),
+        @"\*\*(.+?)\*\*",
+        "<strong>$1</strong>"
+    );
+
+
+    <div class="d-flex mb-3 @(chat.Role == "Doctor" ? "justify-content-end" : "justify-content-start")">
+        <div class="p-2 rounded @(chat.Role == "Doctor" ? "bg-primary text-white" : "bg-light")" style="max-width: 70%;">
+            <strong>@chat.Role:</strong>            
+            @Html.Raw(formattedMessage)
+        </div>
+    </div>
+}
